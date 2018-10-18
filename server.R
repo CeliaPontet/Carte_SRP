@@ -527,8 +527,8 @@ shinyServer(function(input, output,session) {
   })
   
   observe({
-    invalidateLater(5000, session)
-    input$valider.entite.sheet.4
+    invalidateLater(100, session)
+    # input$valider.entite.sheet.4
     if (isolate(reac4$redraw)) {
       reac4$ent4 <- input$choix.entite.sheet.4
     } else {
@@ -603,14 +603,6 @@ shinyServer(function(input, output,session) {
       }
     }
   })
-
-  
-  lim4 <- reactive({
-    input$valider.entite.sheet.4
-    # lim <- fond4() %>% filter_(paste(JoinLevel(),"%in% isolate(input$choix.entite.sheet.4)")) %>% st_bbox()
-    lim <- fond4() %>% filter_(paste(JoinLevel(),"%in% reac4$ent4")) %>% st_bbox()
-  })
-
 
   LIMITS <- reactive({
       if (sum(data.sheet.4()$VALUE,na.rm=TRUE)>0){
@@ -779,18 +771,22 @@ shinyServer(function(input, output,session) {
   })
     
     
-  MapOutputSheet4 <- function(){
+  MapOutputSheet4 <- reactive({
     input$valider.palette.sheet.4
     input$maj.gamme.sheet.4
 
+    lim4 <- fond4() %>% 
+      filter_(paste(JoinLevel(),"%in% reac4$ent4")) %>% 
+      st_bbox()
+    
     #On récupère les limites pour les logos
     xmin.ti <- input$posx.logo.ti.sheet.4
-    xmax.ti <- xmin.ti + (lim4()[3]-lim4()[1])*input$size.logo.ti.sheet.4
+    xmax.ti <- xmin.ti + (lim4[3]-lim4[1])*input$size.logo.ti.sheet.4
     ymin.ti <- input$posy.logo.ti.sheet.4
     ymax.ti <- ymin.ti + (xmax.ti-xmin.ti)*(499/1153)
     #On récupère les limites pour les logos
     xmin.tu <- input$posx.logo.tu.sheet.4
-    xmax.tu <- xmin.tu + (lim4()[3]-lim4()[1])*input$size.logo.tu.sheet.4
+    xmax.tu <- xmin.tu + (lim4[3]-lim4[1])*input$size.logo.tu.sheet.4
     ymin.tu <- input$posy.logo.tu.sheet.4
     ymax.tu <- ymin.tu + (xmax.tu-xmin.tu)*(499/1153)
 
@@ -901,7 +897,7 @@ shinyServer(function(input, output,session) {
     grid.draw(g)
 
     g
-  }
+  })
 
   #Carte
   output$map.sheet.4 <- renderPlot({
@@ -914,7 +910,7 @@ shinyServer(function(input, output,session) {
     validate(need(input$niveau!="National","Une carte des données nationales n'a pas vraiment de sens."))
     validate(need(!(input$type.echelle.sheet.4=="Discrète" & input$nb.interv.sheet.4>9 & isolate(input$mode.couleur.sheet.4)=="Palette"),"Avec une palette prédéfinie, vous ne pouvez pas contruire plus de 9 classes."))
     # validate(need(nrow(eff.sheet.4())>=input$nb.interv.sheet.4,"Le découpage actuel n'aboutit pas au nombre d'intervalles souhaités. Veuillez personnaliser vos intervalles et assurez-vous qu'aucun d'entre eux n'est vide."))
-    print(MapOutputSheet4())
+    MapOutputSheet4()
   })
 
   #Téléchargement de la carte
@@ -945,11 +941,28 @@ shinyServer(function(input, output,session) {
   # --- SHEET 5 : Carte evolution
   #-----------------------------------------------------------------------------
   
+  reac5 <- reactiveValues(redraw = TRUE, ent5 = isolate(input$choix.entite.sheet.5))
+  
+  # If any inputs are changed, set the redraw parameter to FALSE
+  observe({
+    input$choix.entite.sheet.5
+    reac5$redraw <- FALSE
+  })
+  
+  observe({
+    invalidateLater(100, session)
+    # input$valider.entite.sheet.4
+    if (isolate(reac5$redraw)) {
+      reac5$ent5 <- input$choix.entite.sheet.5
+    } else {
+      isolate(reac5$redraw <- TRUE)
+    }
+  })
   
   #Création de data.sheet.5
   data.sheet.5 <- reactive({
     data.sheet.5 <- data() %>%
-      filter(ANNEE %in% c(input$annee1.sheet.5,input$annee2.sheet.5),ENTITE %in% input$choix.entite.sheet.5)
+      filter(ANNEE %in% c(input$annee1.sheet.5,input$annee2.sheet.5),ENTITE %in% reac5$ent5)
     data.sheet.5 %>%
       spread(ANNEE,VALUE,sep="_") %>%
       setNames( c("ENTITE","CULTURE","CRITERE","UNIT","ANNEE1", "ANNEE2")) %>%
@@ -1020,9 +1033,9 @@ shinyServer(function(input, output,session) {
   })
 
   #Limites du graph pour position auto des logos
-  lim5 <- reactive({
-    lim <- fond5() %>% filter_(paste(JoinLevel(),"%in% input$choix.entite.sheet.5")) %>% st_bbox()
-  })
+  # lim5 <- reactive({
+  #   lim <- fond5() %>% filter_(paste(JoinLevel(),"%in% input$choix.entite.sheet.5")) %>% st_bbox()
+  # })
 
 
 
@@ -1199,18 +1212,20 @@ shinyServer(function(input, output,session) {
   
   
 
-  MapOutputSheet5 <- function(){
+  MapOutputSheet5 <- reactive({
     input$valider.palette.sheet.5
     input$maj.gamme.sheet.5
 
+    lim5 <- fond5() %>% filter_(paste(JoinLevel(),"%in% reac5$ent5")) %>% st_bbox()
+    
     #On récupère les limites pour les logos
     xmin.ti <- input$posx.logo.ti.sheet.5
-    xmax.ti <- xmin.ti + (lim5()[3]-lim5()[1])*input$size.logo.ti.sheet.5
+    xmax.ti <- xmin.ti + (lim5[3]-lim5[1])*input$size.logo.ti.sheet.5
     ymin.ti <- input$posy.logo.ti.sheet.5
     ymax.ti <- ymin.ti + (xmax.ti-xmin.ti)*(499/1153)
     #On récupère les limites pour les logos
     xmin.tu <- input$posx.logo.tu.sheet.5
-    xmax.tu <- xmin.tu + (lim5()[3]-lim5()[1])*input$size.logo.tu.sheet.5
+    xmax.tu <- xmin.tu + (lim5[3]-lim5[1])*input$size.logo.tu.sheet.5
     ymin.tu <- input$posy.logo.tu.sheet.5
     ymax.tu <- ymin.tu + (xmax.tu-xmin.tu)*(499/1153)
 
@@ -1364,7 +1379,7 @@ shinyServer(function(input, output,session) {
     g <- ggplot_gtable(ggplot_build(g))
     g$layout$clip[g$layout$name=="panel"] <- "off"
     grid.draw(g)
-  }
+  })
 
 
   #Carte
