@@ -30,7 +30,10 @@ shinyUI(
                     selectInput(
                       inputId = "culture_multiple",
                       label = "Culture(s)",
-                      choices = data_srp %>% distinct(CULTURE) %>% arrange(CULTURE) %>% pull(CULTURE),
+                      choices = list(
+                            Oléagineux = c("Chanvre" , "Colza d'hiver" , "Lin oléagineux" , "Tournesol", "Soja"),
+                            Protéagineux = c("Feverole" , "Lentille" , "Lupin" , "Pois chiche" , "Pois protéagineux" , "Soja"),
+                            Autres = c("Betterave sucrière" , "Blé dur" , "Blé tendre" , "Maïs grain" , "Orge d'hiver" , "Orge de printemps" ,  "Sorgho grain")),
                       selected = "Colza d'hiver",
                       multiple = TRUE)
                   ),
@@ -39,7 +42,10 @@ shinyUI(
                     selectInput(
                       inputId = "culture",
                       label = "Culture",
-                      choices = data_srp %>% distinct(CULTURE) %>% arrange(CULTURE) %>% pull(CULTURE),
+                      choices = list(
+                        Oléagineux = c("Chanvre" , "Colza d'hiver" , "Lin oléagineux" , "Tournesol", "Soja"),
+                        Protéagineux = c("Feverole" , "Lentille" , "Lupin" , "Pois chiche" , "Pois protéagineux" , "Soja"),
+                        Autres = c("Betterave sucrière" , "Blé dur" , "Blé tendre" , "Maïs grain" , "Orge d'hiver" , "Orge de printemps" ,  "Sorgho grain")),
                       selected = "Colza d'hiver",
                       multiple = FALSE)
                   ),
@@ -515,8 +521,14 @@ shinyUI(
                                                   choices = data_srp %>% filter(NIVEAU=="Département") %>% distinct(ENTITE) %>% pull(),
                                                   selected = data_srp %>% filter(NIVEAU=="Département") %>% distinct(ENTITE) %>% pull(),
                                                   multiple =T),
-                               actionButton("valider.entite.sheet.4","Valider"),
-                               checkboxInput("corse.sheet.4","Afficher la Corse",value=FALSE))
+                               # pickerInput(inputId = "choix.entite.sheet.4", label = "Sélectionnez les entités géographiques à représenter",
+                               #   choices = data_srp %>% filter(NIVEAU=="Département") %>% distinct(ENTITE) %>% pull(),
+                               #   selected = data_srp %>% filter(NIVEAU=="Département") %>% distinct(ENTITE) %>% pull(),
+                               #   options = list(`actions-box` = TRUE),multiple = TRUE),
+                               # actionButton("valider.entite.sheet.4","Valider"),
+                               materialSwitch(inputId = "corse.sheet.4",label = "Corse",value = FALSE,status = "primary"))
+                               # switchInput(inputId = "corse.sheet.4", label = "Corse"))
+                               # checkboxInput("corse.sheet.4","Afficher la Corse",value=FALSE))
                       )
                   )
                 ),
@@ -813,15 +825,22 @@ shinyUI(
                              fluidRow(
                                numericInput("annee1.sheet.5",label="Année 1",value=max(data_srp$ANNEE,na.rm=TRUE)-1,min=min(data_srp$ANNEE,na.rm=TRUE),max=max(data_srp$ANNEE)),
                                numericInput("annee2.sheet.5",label="Année 2",value=max(data_srp$ANNEE,na.rm=TRUE),min=min(data_srp$ANNEE,na.rm=TRUE),max=max(data_srp$ANNEE)),
-                               radioButtons("type.evolution.sheet.5","Représenter l'évolution :",choices=c("En pourcentage"="pourc","Brute"="brute")))
+                               # radioButtons("type.evolution.sheet.5","Représenter l'évolution :",choices=c("En pourcentage"="pourc","Brute"="brute"))
+                               radioGroupButtons(
+                                 inputId = "type.evolution.sheet.5",
+                                 label = "Représenter l'évolution :", 
+                                 choices = c("En pourcentage"="pourc","Brute"="brute"),
+                                 status = "primary"
+                               ))
                       ),
                       column(10,
                              selectInput("choix.entite.sheet.5", "Sélectionnez les entités géographiques à représenter",
                                          choices = data_srp %>% filter(NIVEAU=="Département") %>% distinct(ENTITE) %>% pull(),
                                          selected = data_srp %>% filter(NIVEAU=="Département") %>% distinct(ENTITE) %>% pull(),
                                          multiple =T),
-                             actionButton("valider.entite.sheet.5","Valider"),
-                             checkboxInput("corse.sheet.5","Afficher la Corse",value=FALSE))
+                             # actionButton("valider.entite.sheet.5","Valider"),
+                             materialSwitch(inputId = "corse.sheet.5",label = "Corse",value = FALSE,status = "primary"))
+                             # checkboxInput("corse.sheet.5","Afficher la Corse",value=FALSE))
                   )
                 ),
                 fluidRow(
