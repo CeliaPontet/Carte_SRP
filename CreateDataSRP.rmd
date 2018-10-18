@@ -1,0 +1,719 @@
+---
+title: "Création des données SRP"
+author: "Celia Pontet"
+date: "`r format(Sys.Date(),'%d/%m/%Y')`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+Ce script permet de créer les données d'entrée de l'application CartoSRP, à partir de l'ensemble des fichiers excel rassemblant les données.  
+
+# Packages
+
+Ce script utilise un ensemble de packages dont `srpdata` qui est un package que j'ai créé. Il contient notamment une fonction `import_srp`, utilisée sur chaque fichier excel pour importer les données.
+
+```{r}
+rm(list=ls())
+library(srpdata)
+library(readxl)
+library(tidyverse)
+library(sf)
+library(glue)
+library(ggplot2)
+library(gdata)
+library(plotly)
+```
+
+
+#Import des données culture par culture
+
+```{r}
+#---------------------------------------------------------------------------------------
+#COLZA
+# list.files("DATA/",pattern = "xls$",full.names = TRUE)
+# excel_sheets("DATA/SRP_COLZA.xls")
+colza <- import_srp(path="./DATA/SRP_COLZA.xls", sheet_rdt = "RENDEMENTS_CH", 
+                    sheet_surf = "SURFACES_COLZA_HIVER", 
+                    sheet_prod="PRODUCTION_CH", culture = "Colza d'hiver")
+
+#---------------------------------------------------------------------------------------
+#SOJA
+# excel_sheets("DATA/SRP_SOJA.xls")
+soja <- import_srp(path="./DATA/SRP_SOJA.xls",
+                   sheet_rdt = "RENDEMENTS_SOJA",
+                   sheet_surf = "SURFACES_SOJA",
+                   sheet_prod="PRODUCTION SOJA", culture = "Soja")
+
+
+#---------------------------------------------------------------------------------------
+#TOURNESOL
+# excel_sheets("DATA/SRP_TOURNESOL.xls")
+tourn <- import_srp(path="./DATA/SRP_TOURNESOL.xls",
+                    sheet_rdt = "RENDEMENTS_TOURNESOL",
+                    sheet_surf = "SURFACES_TOURNESOL",
+                    sheet_prod="PRODUCTION_TOURNESOL", culture = "Tournesol")
+
+#---------------------------------------------------------------------------------------
+#FEVEROLE
+#excel_sheets("DATA/SRP_FEVEROLE.xls")
+fev <- import_srp(path="DATA/SRP_FEVEROLE.xls",
+                  sheet_rdt = "RENDEMENTS_FEVEROLE",
+                  sheet_surf = "SURFACES_FEVEROLE",
+                  sheet_prod="PRODUCTION_FEVEROLE", culture = "Feverole")
+
+
+#---------------------------------------------------------------------------------------
+#LUPIN
+# excel_sheets("./DATA/SRP_LUPIN.xls")
+lupin <- import_srp(path="DATA/SRP_LUPIN.xlsx",
+                    sheet_rdt = "RENDEMENTS_LUPIN",
+                    sheet_surf = "SURFACES_LUPIN",
+                    sheet_prod="PRODUCTION_LUPIN", culture = "Lupin")
+
+#---------------------------------------------------------------------------------------
+#POIS
+# excel_sheets("./DATA/SRP_POIS_PROTEAGINEUX.xlsx")
+pois <- import_srp(path="DATA/SRP_POIS_PROTEAGINEUX.xlsx",
+                   sheet_rdt = "RENDEMENTS_POIS",
+                   sheet_surf = "SURFACES_POIS",
+                   sheet_prod="PRODUCTION_POIS", culture = "Pois protéagineux")
+
+# ---------------------------------------------------------------------------------------
+#LIN
+# excel_sheets("./DATA/SRP_LIN_OLEAGINEUX.xls")
+lin <- import_srp(path="DATA/SRP_LIN_OLEAGINEUX.xls",
+                  sheet_rdt = "RENDEMENTS_LIN",
+                  sheet_surf = "SURFACES_LIN",
+                  sheet_prod="PRODUCTION LIN", culture = "Lin oléagineux")
+
+
+#---------------------------------------------------------------------------------------
+#BLE DUR
+# excel_sheets("./DATA/SRP_BLE_DUR.xls")
+ble_dur <- import_srp(path="DATA/SRP_BLE_DUR.xls",
+                      sheet_rdt = "RENDEMENTS_BLE DUR",
+                      sheet_surf = "SURFACES_BLE DUR",
+                      sheet_prod="PRODUCTION_BLE DUR", culture = "Blé dur")
+
+#---------------------------------------------------------------------------------------
+#BLE tendre
+# excel_sheets("./DATA/SRP_BLE_TENDRE.xls")
+ble_tendre <- import_srp(path="DATA/SRP_BLE_TENDRE.xls",
+                         sheet_rdt = "RENDEMENTS_BLE_TENDRE",
+                         sheet_surf = "SURFACES_BLE_TENDRE",
+                         sheet_prod="PRODUCTION_BLE TENDRE", culture = "Blé tendre")
+
+#---------------------------------------------------------------------------------------
+#ORGE HIVER
+# excel_sheets("./DATA/SRP_ORGE_HIVER.xls")
+orge_hiver <- import_srp(path="DATA/SRP_ORGE_HIVER.xls",
+                         sheet_rdt = "RENDEMENTS_ORGE HIVER",
+                         sheet_surf = "SURFACES_ORGE HIVER",
+                         sheet_prod="PRODUCTION_ORGE HIVER", culture = "Orge d'hiver")
+
+#---------------------------------------------------------------------------------------
+#ORGE PRINTEMPS
+# excel_sheets("./DATA/SRP_ORGE_PRINTEMPS.xls")
+orge_printemps <- import_srp(path="DATA/SRP_ORGE_PRINTEMPS.xls",
+                             sheet_rdt = "RENDEMENTS_ORGE PRINTEMPS",
+                             sheet_surf = "SURFACES_ORGE PRINTEMPS",
+                             sheet_prod="PRODUCTION_ORGE PRINTEMPS", culture = "Orge de printemps")
+
+#---------------------------------------------------------------------------------------
+#SORGHO GRAIN
+# excel_sheets("./DATA/SRP_SORGHO_GRAIN.xls")
+sorgho <- import_srp(path="DATA/SRP_SORGHO_GRAIN.xls",
+                     sheet_rdt = "RENDEMENTS_SORGHO_GRAIN",
+                     sheet_surf = "SURFACES_SORGHO_GRAIN",
+                     sheet_prod="PRODUCTION_SORGHO_GRAIN", culture = "Sorgho grain")
+
+
+#---------------------------------------------------------------------------------------
+#MAIS grain
+# excel_sheets("./DATA/SRP_MAIS_GRAIN.xls")
+mais <- import_srp(path="DATA/SRP_MAIS_GRAIN.xls",
+                   sheet_rdt = "RENDEMENTS_MAÏS_GRAIN",
+                   sheet_surf = "SURFACES_MAïS_GRAIN",
+                   sheet_prod="PRODUCTION_MAÏS_GRAIN", culture = "Maïs grain")
+
+
+#---------------------------------------------------------------------------------------
+#Betterave
+# excel_sheets("./DATA/SRP_BETTERAVE_SUCRIERE.xls")
+betterave <- import_srp(path="DATA/SRP_BETTERAVE_SUCRIERE.xls",
+                        sheet_rdt = "RENDEMENTS_BETTERAVE_S",
+                        sheet_surf = "SURFACES_BETTERAVE_S",
+                        sheet_prod="PRODUCTION_BETTERAVE_S", culture = "Betterave sucrière")
+
+
+#---------------------------------------------------------------------------------------
+#POIS CHICHE
+# excel_sheets("./DATA/SRP_POIS_CHICHE.xls")
+pois_chiche <- import_srp(path="DATA/SRP_POIS_CHICHE.xls",
+                          sheet_surf = "SURFACES_POIS CHICHE",
+                          culture = "Pois chiche")
+
+
+#---------------------------------------------------------------------------------------
+#LENTILLE
+# excel_sheets("./DATA/SRP_LENTILLE.xlsx")
+lentille <- import_srp(path="DATA/SRP_LENTILLE.xls",
+                       sheet_surf = "SURFACES_LENTILLE",
+                       culture = "Lentille")
+
+#---------------------------------------------------------------------------------------
+#CHANVRE
+# excel_sheets("./DATA/SRP_CHANVRE.xlsx")
+chanvre <- import_srp(path="DATA/SRP_CHANVRE.xlsx",
+                      sheet_surf = "SURFACES_CHANVRE",
+                      culture = "Chanvre")
+```
+
+A ce moment, dans l'environnement, il existe un objet par culture, ayant exactement le même format. Les données Surface, rendemenet et production y sont rassemblées.  
+
+`r head(colza)`  
+
+#Mise en forme des données
+
+On va ici :  
+- coller l'ensemble des ces tables  
+- enlever la colonne ZONE_TI  
+- ne onserver que les lignes correspondant aux départements  
+- extraire le numéro du département de la colonne `DEPARTEMENT` et le stocker dans `CODe_DEPT`  
+
+```{r}
+data_dep <- mget(ls()) %>% 
+  bind_rows() %>% 
+  select(-ZONE_TI) %>% 
+  filter(substr(DEPARTEMENT,1,1)=="D") %>% #On ne conserve que les lignes départements
+  complete(CRITERE,CULTURE,ANNEE,DEPARTEMENT) %>% 
+  mutate(CODE_DEPT=substr(DEPARTEMENT,2,3)) %>% #On extrait le code département du DEPARTEMENT
+  filter(!is.na(CULTURE))
+```
+
+On importe le fichier contenant les correspondances Département/Région/Zone IRD/Zone TI et on ajoute ces infos aux données.  
+Puis,  
+- On met en `NA` les rendements = 0  
+- on ordonne les colonnes  
+
+```{r}
+ref <- read_delim("./DATA/Ref.csv",delim = ";") %>% 
+  mutate(CODE_DEPT = case_when(nchar(CODE_DEPT)==1 ~ paste0("0",CODE_DEPT,sep=""),
+                               TRUE ~ CODE_DEPT)) 
+
+data_dep <- data_dep %>% 
+  full_join(ref,by="CODE_DEPT") %>% 
+  mutate(NIVEAU = "Département",
+         NOM_NAT="National",
+         VALUE=case_when(CRITERE=="Rendement" & VALUE==0 ~ NA_real_,
+                         TRUE ~ VALUE)) %>% 
+  # mutate_if(is.character,as.factor) %>% 
+  select(CRITERE,CULTURE,CODE_DEPT,NOM_DEPT,ANNEE,CODE_REG,NOM_REG,ZONE_TI,ZONE_IRD,NOM_ANC_REG,NOM_NAT,VALUE,STATUT,MAJ,NIVEAU) %>% 
+  filter(!is.na(CULTURE))
+```
+
+On crée maintenant le colonne `WEIGTH_SURFACE` (= à la surface du département pour la culture, l'année et le département) qui servira au calcul des rendements pondérés.
+
+```{r}
+data_dep_w <- data_dep %>% 
+  filter(CRITERE=="Surface") %>% 
+  select(CULTURE,ANNEE,CODE_DEPT,VALUE) %>%
+  rename(WEIGTH_SURFACE = "VALUE") %>% 
+  full_join(data_dep,by=c("CULTURE","ANNEE","CODE_DEPT"))
+```
+
+Enfin on crée les tables `data_region, data_ird, data_ti, data_nat` en aggréageant par niveau et en réalisant pour :  
+- surface = sommes des surfaces  
+- production = somme des productions
+- rendement = rendement moyen pondéré par les surfaces départementales  
+
+Pour cela j'utilise la fonction `srp_aggregate` de mon packages {srpdata}.  
+
+```{r}
+data_anc_region <- data_dep_w %>% 
+  srp_aggregate(NOM_ANC_REG, nom="Région (anciennes)") %>%
+  rename("ENTITE"="NOM_ANC_REG") 
+data_region <- data_dep_w %>% 
+  srp_aggregate(NOM_REG, nom="Région") %>%
+  rename("ENTITE"="NOM_REG") 
+data_ird <- data_dep_w %>% 
+  srp_aggregate(ZONE_IRD, nom="ZONE IRD") %>%
+  rename("ENTITE"="ZONE_IRD") 
+data_ti <- data_dep_w %>% 
+  srp_aggregate(ZONE_TI, nom="ZONE TI") %>%
+  rename("ENTITE"="ZONE_TI") 
+data_nat <- data_dep_w %>% 
+  srp_aggregate(NOM_NAT,nom="National") %>%
+  rename("ENTITE"="NOM_NAT") 
+```
+
+Je fait une unique table **`data_srp`** de l'ensemble, en empilant les jeux de données les uns sur les autres.  
+J'y ajoute :  
+- la colonne `UNIT` : ha, t, q/ha ou t/ha  
+- la colonne `STATUT_NA` : Production, Manquant  ou Pas de production  
+- les colonnes `MAJ` et `STATUT` (recueillies par culture, critère et année)  
+
+```{r}
+maj_statut<-data_dep %>% 
+  select(CRITERE,CULTURE,ANNEE,MAJ,STATUT) %>% 
+  distinct() %>% 
+  filter(!is.na(MAJ))
+
+data_srp <- data_dep %>% 
+  select(CRITERE,CULTURE,ANNEE,NOM_DEPT,VALUE,NIVEAU) %>% 
+  rename(ENTITE="NOM_DEPT") %>% 
+  bind_rows(data_anc_region,data_region,data_ird,data_ti,data_nat) %>% 
+  mutate(UNIT = case_when(CRITERE == "Surface" ~ "ha",
+                 CRITERE == "Production" ~ "t",
+                 CRITERE == "Rendement" & CULTURE != "Betterave sucrière" ~ "q/ha",
+                 CRITERE == "Rendement" & CULTURE == "Betterave sucrière"~ "t/ha"),
+         STATUT_NA = case_when(is.na(VALUE) ~ "Manquant",
+                               VALUE == 0 ~ "Pas de production",
+                               TRUE ~ "Production")) %>% 
+  full_join(maj_statut,by=c("CRITERE","CULTURE","ANNEE")) %>% 
+  # mutate_if(is.character,as.factor) %>%
+  mutate(MAJ = as.Date(MAJ,format="%d/%m/%Y")) %>% 
+  filter(!is.na(CRITERE))
+
+data_srp %>% 
+  mutate_if(is.character,as.factor) %>% 
+  summary
+
+saveRDS(data_srp,file="data_srp.rds")
+saveRDS(ref,file="ref.rds")
+```
+
+
+#Les cartes et graphiques nouvelle version
+
+```{r}
+rm(list=ls())
+library(tidyverse)
+library(gdata)
+library(sf)
+library(plotly)
+library(ggiraph)
+
+data_srp <- as.tibble(readRDS(file = "./DATA/data_srp.rds"))
+ref <- as.tibble(readRDS(file = "./DATA/ref.rds")) %>% 
+  mutate(CODE_REG=as.factor(CODE_REG))
+
+#####Graphiques Sheet3#####
+
+levels(data_srp$CRITERE)
+critere <- "Surface"
+
+levels(data_srp$CULTURE)
+culture <- c("Soja","Colza")
+
+levels(data_srp$NIVEAU)
+echelle <- "ZONE TI"
+
+levels(drop.levels(data_srp$ENTITE[data_srp$NIVEAU=="ZONE TI"]))
+entites <- c("Centre-Ouest","Est et Nord")
+
+summary(data_srp$ANNEE)
+annees <- c(1989,2018)
+
+p <- data_srp %>% 
+  filter(CRITERE == critere, CULTURE == culture, NIVEAU == echelle, ENTITE %in% entites, ANNEE<=annees[2], ANNEE>=annees[1]) %>% 
+  mutate(TOOLTIP=glue("{ENTITE} \n {ANNEE} \n {VALUE} {UNIT}"),
+         TOOLTIP= gsub("'", "&#39;", TOOLTIP))
+if (length(culture)>1){
+  p <- p %>% 
+    group_by(ANNEE,ENTITE) %>% 
+    summarise(VALUE=sum(VALUE)) %>% 
+    mutate(CULTURE = paste(culture,collapse="/")) %>% 
+    ungroup
+}  
+
+p <- p %>%  
+  ggplot() +
+  aes(x=ANNEE,y=VALUE,group=ENTITE,colour=ENTITE,tooltip=VALUE)+
+  geom_line_interactive()+
+  geom_point_interactive()+
+  xlab("Annees")+
+  ylab(critere)+
+  theme(plot.title=element_text( size=1, hjust =0.5))+
+  theme(legend.title=element_blank())+
+  scale_x_continuous(breaks=seq(annees[1],annees[2],1))+
+  ggtitle("Titre")
+  # annotation_custom(rasterGrob(ti),1989,2000,10000,20000)
+
+ggiraph(code=print(p))
+
+lim_y <- ggplot_build(p)$layout$panel_params[[1]]$y.range
+lim_x <- ggplot_build(p)$layout$panel_params[[1]]$x.range
+
+xmax.ti <- lim_x[2]
+ymax.ti <- lim_y[2]
+xmin.ti <- xmax.ti - (lim_x[2]-lim_x[1])*0.15
+ymin.ti <- ymax.ti - (lim_y[2]-lim_y[1])*0.15
+
+ti <- readPNG("./DATA/LogoTI.png")
+
+p <- p + annotation_custom(rasterGrob(ti),xmin.ti, xmax.ti, ymin.ti, ymax.ti)
+
+p1 <- ggplot_gtable(ggplot_build(p))
+p1$layout$clip[p$layout$name=="panel"] <- "off" 
+
+grid.draw(p1)
+ggiraph(code=grid.draw(p1))
+ggplot(p1)
+
+
+p2 <- plotly_build(p)
+p2$layout$clip[p$layout$name=="panel"] <- "off" 
+
+grid.draw(p2)
+
+ggplotly(p2)
+
+ggiraph(code=grid.draw(p1))
+
+
+ggplot()+
+  aes(x=ANNEE,y=VALUE,group=ENTITE,colour=ENTITE,tooltip=TOOLTIP)+
+  geom_line_interactive(lwd=0,size=0)+
+  geom_point_interactive()+
+  xlab("Annees")+
+  ylab(critere)+
+  theme(plot.title=element_text( size=1, hjust =0.5))+
+  theme(legend.title=element_blank())+
+  scale_x_continuous(breaks=seq(annees[1],annees[2],1))
+ggiraph(code=print(p))
+
+#####Cartes#####
+#Fond de carte département
+departements_L93 <- st_read(dsn = "./DEPARTEMENTS", layer = "DEPARTEMENT", quiet = TRUE) %>% 
+  st_transform(2154)%>% 
+  full_join(ref,by=c("CODE_DEPT","NOM_DEPT","CODE_REG","NOM_REG"))
+
+departements_L93 <- st_as_sf(departements_L93)
+
+fond_dept <- departements_L93
+fond_region <- departements_L93 %>% 
+  group_by(NOM_REG) %>% 
+  summarize()
+fond_region <- departements_L93 %>% 
+  group_by(NOM_REG) %>% 
+  summarize()
+fond_ird <- departements_L93 %>% 
+  group_by(ZONE_IRD) %>% 
+  summarize()
+fond_ti <- departements_L93 %>% 
+  group_by(ZONE_TI) %>% 
+  summarize()
+
+
+
+
+
+niveau="Département"
+culture = "Colza d'hiver"
+critere = "Surface"
+annee = 2018
+
+colfunc <- colorRampPalette(c("red","blue"))
+par(height=2)
+plot(rep(1,20),col=colfunc(20),pch=19,cex=3,ylim=c(0.9,1.1))
+
+plot(x=1:50,y=rep(0.5,50), type= "n", xlab = "", ylab = "",xaxt='n',yaxt='n',frame.plot=FALSE)
+rect(0.5:49.5,rep(0,50),1.5:50.5,rep(1,50),col=colfunc(50),lwd=0,ylim=c(0,1),border = NA)
+
+colfunc <- colorRampPalette(brewer.pal(9, "Oranges"))
+
+colfunc <- colorRampPalette(brewer.pal(9, "Oranges"))(100)
+
+plot(x=1:50,y=rep(0.5,50), type= "n", xlab = "", ylab = "",xaxt='n',yaxt='n',frame.plot=FALSE)
+rect(0.5:49.5,rep(0,50),1.5:50.5,rep(1,50),col=colfunc(50)[50:1],lwd=0,ylim=c(0,1),border = NA)
+display.brewer.pal(50,"Oranges") 
+
+data_srp %>% 
+      filter(CRITERE %in% critere, CULTURE %in% culture, NIVEAU %in% niveau)
+
+if (niveau=="Département"){
+  JoinLevel <- "NOM_DEPT"
+  fond <- fond_dept
+} else if (niveau=="Région"){
+  JoinLevel <- "NOM_REG"
+  fond <- fond_region
+} else if (niveau=="Zone TI"){
+  JoinLevel <- "ZONE_IRD"
+  fond <- fond_ird
+} else {
+  JoinLevel <- "ZONE_TI"
+  fond <- fond_ti
+}
+
+
+fond %>% st_bbox()
+
+#Discret gradient perso
+col <- colorRampPalette(c("white","black"))(4)
+
+data <- data_srp %>% 
+  filter(NIVEAU %in% niveau, CULTURE %in% culture, CRITERE %in% critere, ANNEE %in% annee)
+
+
+nb.intrv <- 10
+LIMITS2 <- seq(from=min(data$VALUE,na.rm=TRUE),to=max(data$VALUE,na.rm=TRUE),length.out=nb.intrv+1)
+LIMITS <- LIMITS2
+LIM <- NULL
+while (length(LIMITS)>1){
+  LIM <- c(LIM,glue("{LIMITS[1]}-{LIMITS[2]} {data %>% distinct(UNIT) %>% pull()}"))
+  LIMITS <- LIMITS[-1]
+}
+
+departements_L93 %>% st_bbox()
+fond %>% st_bbox()
+fond %>% filter(ZONE_TI!="Sud") %>% st_bbox()
+fond@bbox
+
+pourc <- 0.15
+lim <- fond %>% filter(ZONE_TI!="Sud") %>% get_bbox() 
+xmin <- lim[1]
+xmax <- xmin + (lim[3]-lim[1])*pourc
+ymin <- lim[2]
+ymax <- ymin + (xmax-xmin)*(499/1153)
+
+data_srp %>% 
+  filter(NIVEAU %in% niveau, CULTURE %in% culture, CRITERE %in% critere, ANNEE %in% annee) %>% 
+  full_join(fond,by=c("ENTITE"=JoinLevel)) %>% 
+  filter(ZONE_TI!="Sud") %>% 
+  ggplot() +
+  geom_sf(aes(fill=cut(VALUE,breaks=LIMITS2)))+
+  coord_sf(datum=NA)+#Supprime les graduations
+  # scale_fill_viridis_d()+
+  # scale_fill_manual(values=colorRampPalette(c("white","black"))(nb.intrv),labels=LIM) +
+  scale_fill_brewer()+
+  theme(panel.background=element_rect(fill="white"))+#Fond blanc au lieu de gris
+  ggtitle("Titre")+
+  annotation_custom(rasterGrob(img), xmin, xmax, ymin, ymax) 
+  
+
+data_srp %>% 
+  filter(NIVEAU %in% niveau, CULTURE %in% culture, CRITERE %in% critere, ANNEE %in% annee) %>% 
+  full_join(fond,by=c("ENTITE"=JoinLevel)) %>% 
+  ggplot() +
+  geom_sf(aes(fill=cut(VALUE,breaks=LIMITS2)))+
+  coord_sf(datum=NA)+#Supprime les graduations
+  # scale_fill_viridis_d()+
+  # scale_fill_manual(values=colorRampPalette(c("white","black"))(nb.intrv),labels=LIM) +
+  scale_fill_brewer(palette="")+
+  theme(panel.background=element_rect(fill="white"))+#Fond blanc au lieu de gris
+  ggtitle("Titre")+
+  annotation_custom(rasterGrob(img), xmin=99217, xmax=1000000, ymin=6000000, ymax=6200000) 
+
+
+
+
+library(png)
+library(grid)
+library(tidyverse)
+img <- readPNG("./DATA/LogoTI.png")
+
+qplot(1:10, 1:10, geom="blank") +
+  annotation_custom(rasterGrob(img), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf) +
+  geom_point()
+
+
+g <- g+scale_colour_gradientn(colours=c(isolate(input$couleur1.map.sheet.4),isolate(input$couleur2.map.sheet.4)),limits=c(isolate(input$leg.gamme.min.sheet.4),isolate(input$leg.gamme.max.sheet.4)))
+        } else {
+          g <- g+scale_colour_gradientn(colours=c(isolate(input$couleur1.map.sheet.4),isolate(input$couleur2.map.sheet.4)))
+        }
+
+
+
+cut(data_srp$VALUE,4,dig.lab=10)
+
+#Discret 
+data_srp %>% 
+  filter(NIVEAU %in% niveau, CULTURE %in% cult, CRITERE %in% crit, ANNEE %in% Ann) %>% 
+  full_join(departements_L93,by=c("ENTITE"="NOM_DEPT")) %>% 
+  ggplot() +
+  geom_sf(aes(fill=cut(VALUE,4)))+
+  coord_sf(datum=NA)+#Supprime les graduations
+  scale_fill_viridis_d()+
+  # scale_colour_gradientn(colors = colfunc(20))+
+  theme(panel.background=element_rect(fill="white"))+#Fond blanc au lieu de gris
+  ggtitle("Titre")
+
+
+
+#continu gradient perso
+data_srp %>% 
+  filter(NIVEAU %in% niveau, CULTURE %in% cult, CRITERE %in% crit, ANNEE %in% Ann) %>% 
+  full_join(departements_L93,by=c("ENTITE"="NOM_DEPT")) %>% 
+  ggplot() +
+  geom_sf(aes(fill=VALUE),size=2)+
+  coord_sf(datum=NA)+#Supprime les graduations
+  # scale_fill_viridis_d()+
+  scale_fill_gradientn(colours=c("red",NULL,"blue"))+
+  theme(panel.background=element_rect(fill="white"))+#Fond blanc au lieu de gris
+  ggtitle("Titre")
+
+
+#continu viridis
+data_srp %>% 
+  filter(NIVEAU %in% niveau, CULTURE %in% cult, CRITERE %in% crit, ANNEE %in% Ann) %>% 
+  full_join(departements_L93,by=c("ENTITE"="NOM_DEPT")) %>% 
+  ggplot() +
+  geom_sf(aes(fill=VALUE))+
+  coord_sf(datum=NA)+#Supprime les graduations
+  # scale_colour_brewer(type="div",palette=8)+
+  scale_fill_viridis_c(option = "plasma")+
+  theme(panel.background=element_rect(fill="white"))+#Fond blanc au lieu de gris
+  # ggtitle("Titre")+
+  labs(title="Titre",subtitle="Sous-titre",caption="Source")+
+  north(departements_L93) +
+    scalebar(departements_L93, dist = 100, dd2km = FALSE, height = 0.01)
+  # annotation_custom(ti, xmin=640, xmax=650, ymin=6042100, ymax=6042150) 
+
+
+
+#continu distiller
+data_srp %>% 
+  filter(NIVEAU %in% niveau, CULTURE %in% culture, CRITERE %in% critere, ANNEE %in% annee) %>% 
+  left_join(fond,by=c("ENTITE"=JoinLevel)) %>% 
+  ggplot() +
+  geom_sf(aes(fill=VALUE))+
+  coord_sf(datum=NA)+#Supprime les graduations
+  scale_fill_distiller(palette = "BuGn")+
+  # scale_fill_viridis_c(option = "plasma")+
+  theme(panel.background=element_rect(fill="white"))+#Fond blanc au lieu de gris
+  # ggtitle("Titre")+
+  labs(title="Titre",subtitle="Sous-titre",caption="Source")+
+  north(departements_L93) +
+    scalebar(departements_L93, dist = 100, dd2km = FALSE, height = 0.01)
+  # annotation_custom(ti, xmin=640, xmax=650, ymin=6042100, ymax=6042150)
+
+
+
+
+
+
+
+
+
+
+g <- data_srp %>% 
+  filter(NIVEAU %in% niveau, CULTURE %in% cult, CRITERE %in% crit, ANNEE %in% Ann) %>% 
+  full_join(departements_L93,by=c("ENTITE"="NOM_DEPT")) %>% 
+  mutate(TOOLTIP = paste0(ENTITE,":",VALUE)) %>% 
+  ggplot()
+  g <- g+geom_sf_interactive(aes(fill=VALUE,tooltip = ENTITE))
+  ggiraph(code=print(g), 
+          hover_css = "fill:red",
+          tooltip_extra_css = "background-color:gray;color:white;font-style:italic;padding:10px;border-radius:10px 20px 10px 20px;", tooltip_opacity = .75,
+          zoom_max = 5)
+  g
+  
+  coord_sf(datum=NA)+#Supprime les graduations
+  # scale_colour_brewer(type="div",palette=8)+
+  scale_fill_viridis_c(option = "plasma")+
+  theme(panel.background=element_rect(fill="white"))+#Fond blanc au lieu de gris
+  # ggtitle("Titre")+
+  labs(title="Titre",subtitle="Sous-titre",caption="Source")+
+  north(departements_L93) +
+    scalebar(departements_L93, dist = 100, dd2km = FALSE, height = 0.01)
+  # annotation_custom(ti, xmin=640, xmax=650, ymin=6042100, ymax=6042150) 
+
+
+
+
+annotation_custom(rasterGrob(ti), xmin = 640, xmax = 650, ymin = 6042100, ymax = 6042150)
+
+ti<-readPNG("C:/Users/cpontet/OneDrive - terresinovia.fr/Mes Documents/R/win-library/3.5/ggsn/symbols/01.png")
+ti <- rasterGrob(ti, interpolate=TRUE)
+
+qplot(1:10, 1:10, geom="blank") +
+  geom_point()
+
+?RColorBrewer
+
+
+g
+g %>% 
+  ggplotly()
+
+
+```
+
+
+
+#Carte évolutions
+```{r}
+niveau="Région"
+culture = "Colza d'hiver"
+critere = "Surface"
+annees = c(2017,2018)
+
+colfunc <- colorRampPalette(c("red","blue"))
+plot(rep(1,20),col=colfunc(20),pch=19,cex=3)
+
+
+if (niveau=="Département"){
+  JoinLevel <- "NOM_DEPT"
+  fond <- fond_dept
+} else if (niveau=="Région"){
+  JoinLevel <- "NOM_REG"
+  fond <- fond_region
+} else if (niveau=="Zone TI"){
+  JoinLevel <- "ZONE_IRD"
+  fond <- fond_ird
+} else {
+  JoinLevel <- "ZONE_TI"
+  fond <- fond_ti
+}
+
+
+
+#continu viridis
+data_evol <- data_srp %>% 
+  filter(NIVEAU %in% niveau, CULTURE %in% culture, CRITERE %in% critere, ANNEE %in% annees) %>%
+  spread(ANNEE,VALUE,sep="_") %>% 
+  setNames( c("CRITERE","CULTURE","ENTITE","NIVEAU","UNIT","STATUT_NA","MAJ","STATUT","ANNEE1", "ANNEE2")) %>% 
+  mutate(EVOLUTION=ANNEE2-ANNEE1,
+         POURC_EVOLUTION=(ANNEE2-ANNEE1)/ANNEE1*100)
+
+MAX <- max(max(data_evol$POURC_EVOLUTION,na.rm = TRUE),abs(min(data_evol$POURC_EVOLUTION,na.rm = TRUE)))  
+
+fond <- st_as_sf(fond) %>% 
+  mutate(LON = map_dbl(geometry, ~st_centroid(.x)[[1]]),
+    LAT = map_dbl(geometry, ~st_centroid(.x)[[2]]))
+
+data_evol %>% 
+  full_join(fond,by=c("ENTITE"=JoinLevel)) %>% 
+  ggplot() +
+  geom_sf(aes(fill=POURC_EVOLUTION))+
+  coord_sf(datum=NA)+#Supprime les graduations
+  # scale_colour_brewer(type="div",palette=8)+
+  scale_fill_gradient2(low="brown3", mid="cornsilk1", high="turquoise4",
+                     limits=c(-MAX, MAX), na.value="grey") +
+  theme(panel.background=element_rect(fill="white"))+#Fond blanc au lieu de gris
+  # ggtitle("Titre")+
+  labs(title="Titre",subtitle="Sous-titre",caption="Source")+
+  north(departements_L93) +
+    scalebar(departements_L93, dist = 100, dd2km = FALSE, height = 0.01)+
+  geom_text(aes(label=round(POURC_EVOLUTION,1),x = LON ,y= LAT))
+  # annotation_custom(ti, xmin=640, xmax=650, ymin=6042100, ymax=6042150) 
+
+
+```
+
+
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
