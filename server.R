@@ -1379,6 +1379,8 @@ shinyServer(function(input, output,session) {
     g <- ggplot_gtable(ggplot_build(g))
     g$layout$clip[g$layout$name=="panel"] <- "off"
     grid.draw(g)
+    
+    g
   })
 
 
@@ -1395,7 +1397,8 @@ shinyServer(function(input, output,session) {
       ggsave(file,plot = MapOutputSheet5(),dpi=600)
     }
   )
-
+  
+  
   #Affichage des données
   output$df.sheet.5 <- DT::renderDataTable(data.sheet.5(),filter = 'top', server = TRUE, rownames = FALSE,
                                 options = list(autoWidth = TRUE), selection = 'none')#  v3.4.1 argument ne fonctionne pas , editable = FALSE

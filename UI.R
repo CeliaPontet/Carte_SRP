@@ -104,7 +104,7 @@ shinyUI(
                 #Texte d'acceuil
                 # Chiffres cles des donnees SRP
                 fluidRow(
-                  absolutePanel(top=120,right=0,left=250,width="1100px",draggable=TRUE,cursor="move",
+                  absolutePanel(top=120,right=0,left=250,width="1400px",draggable=TRUE,cursor="move",
                                 fluidRow(
                                   column(9,infoBoxOutput(width=NULL, "infobox_sheet2.1")),
                                   column(3,infoBoxOutput(width=NULL, "infobox_sheet2.3"))
@@ -176,7 +176,7 @@ shinyUI(
                            box(title="Graphique & Données",status="primary",solidHeader=TRUE,width=12,collapsible=TRUE,
                                tabBox(width=12,
                                       tabPanel(title="Graphique",
-                                               plotOutput("graph.sheet.3"),
+                                               plotOutput("graph.sheet.3", click = "plot3_click"),
                                                # plotlyOutput("graph.sheet.3",width="100%",height="75%"),
                                                # ggiraphOutput("graph.sheet.3"),
                                                hr(),
@@ -539,7 +539,7 @@ shinyUI(
                          box(title="Carte & Données",status="primary",solidHeader=TRUE,width=12,collapsible=TRUE,
                              tabBox(width=12,
                                     tabPanel("Carte",
-                                             plotOutput("map.sheet.4",width="100%",height="480px"),
+                                             plotOutput("map.sheet.4",width="100%",height="480px", click = "plot4_click"),
                                              fluidRow(
                                                column(1,dropdownButton(circle = TRUE, status = "primary", icon = icon("question"), size = "xs","Pour assurer une excellente qualité, choisir pdf ou tiff.")),
                                                column(5,radioButtons(inputId="save.type.sheet.4",label="Type de fichier",choices=list("pdf","png","jpeg","tiff"),inline=TRUE))
@@ -848,7 +848,7 @@ shinyUI(
                          box(title="Carte & Données",status="primary",solidHeader=TRUE,width=12,collapsible=TRUE,
                              tabBox(width=12,
                                     tabPanel("Carte",
-                                             column(12,plotOutput("map.sheet.5",width="100%",height="480px")),
+                                             column(12,plotOutput("map.sheet.5",width="100%",height="480px", click = "plot5_click")),
                                              fluidRow(
                                                column(1,dropdownButton(circle = TRUE, status = "primary", icon = icon("question"), size = "xs","Pour assurer une excellente qualité, choisir pdf ou tiff.")),
                                                column(5,radioButtons(inputId="save.type.sheet.5",label="Type de fichier",choices=list("pdf","png","jpeg","tiff"),inline=TRUE))
@@ -1058,12 +1058,14 @@ shinyUI(
                                                  column(4,hidden(sliderInput("size.logo.ti.sheet.5",
                                                                              label="Taille",
                                                                              value=0.15,min=0,max=1,step=0.01))),
-                                                 column(4,hidden(sliderInput("posx.logo.ti.sheet.5",
+                                                 column(4,hidden(numericInput("posx.logo.ti.sheet.5",
                                                                              label="Position X",
                                                                              value=900310,min=90000,max=1300000,step=1))),
-                                                 column(4,hidden(sliderInput("posy.logo.ti.sheet.5",
+                                                 column(4,hidden(numericInput("posy.logo.ti.sheet.5",
                                                                              label="Position Y",
                                                                              value=7200660,min=6000000,max=7500000,step=1)))),
+                                               actionButton("LogoTIclick5","Positionner le logo à l'endroit du dernier click"),
+                                               verbatimTextOutput("info"),
                                                hr(),
                                                h3("Logo TU"),
                                                checkboxInput("logo.tu.sheet.5","Afficher le logo Terres Univia",value=TRUE),
